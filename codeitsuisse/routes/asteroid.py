@@ -12,7 +12,7 @@ def scoring(input_string):
     s = input_string
     score_list = [0.0] * len(s)
 
-    for origin in range(int(len(s)/2-len(s)/5), int(len(s)/2+len(s)/5)):
+    for origin in range(int(len(s)/2-len(s)/4), int(len(s)/2+len(s)/4)):
         score = 0
         left_queue = []
         right_queue = []
