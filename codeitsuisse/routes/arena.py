@@ -16,6 +16,7 @@ def tic_tac_toe():
     battle_id = data.get("battleId")
 
     battle_event = requests.get('https://cis2021-arena.herokuapp.com/tic-tac-toe/start/%s' % battle_id)
+    logging.info("data sent for evaluation {}".format(battle_event.json()))
 
     # result = inputValue * inputValue
     # logging.info("My result :{}".format(result))
