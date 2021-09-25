@@ -17,7 +17,7 @@ def cipher(d, x, y_str):
     fx = str(round(f(int(x)), 3))
     for i in range(0, 10 ** (d + 1)):
         s = str(i) + "::" + fx
-        print(s)
+        # print(s)
         s_bytes = s.encode('utf-8')
         y = hashlib.sha256(s_bytes).hexdigest()
         # print(y)
@@ -40,7 +40,7 @@ def cipher_cracking():
     input_array = data
     output = []
     for each_input in input_array:
-        print(each_input.get('challenge_no'))
+        # print(each_input.get('challenge_no'))
         diff = each_input.get('D')
         x_val = each_input.get('X')
         y_val = each_input.get('Y')
