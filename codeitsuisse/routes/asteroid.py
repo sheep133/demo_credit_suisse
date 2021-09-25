@@ -30,15 +30,62 @@ def scoring(input_string, position):
     score = 0
     asteroid_type = [0] * 26
     asteroid_type[ord(input_string[position]) - 65] += 1
-    for j in range(len(input_string)):
-        left = position - j
-        right = position + j
+    last_char = input_string[position]
+    left_flag = False
+    right_flag = False
+    new_left = 0
+    new_right = 0
+    for j in range(max(position+1, len(input_string)-position)):
+
+        if left_flag:
+            left = new_left
+            left_flag = False
+        else:
+            left = position - j
+        # print(left)
+
+        if right_flag:
+            right = new_right
+            right_flag = False
+        else:
+            right = position + j
+        # print(right)
+
+        # left = position - j
+        # right = position + j
+        # print(left, right)
         if 0 <= left != right < len(input_string):
+
             if input_string[left] == input_string[right]:
                 char = input_string[left]
                 asteroid_type[ord(char)-65] += 2
-                print(left, right, char)
-    # print(asteroid_type)
+                last_char = input_string[left]
+                # print(left, right, char)
+            else:
+                # print("ssss")
+                new_left = left
+                new_right = right
+                while new_left >= 0 and input_string[new_left] == last_char:
+                    left_flag = True
+                    char = input_string[new_left]
+                    # print(new_left, char)
+                    asteroid_type[ord(char) - 65] += 1
+                    new_left -= 1
+
+                while new_right < len(input_string) and input_string[new_right] == last_char:
+                    right_flag = True
+                    char = input_string[new_right]
+                    asteroid_type[ord(char) - 65] += 1
+                    new_right += 1
+        else:
+            if left < 0:
+                char = input_string[right]
+                asteroid_type[ord(char) - 65] += 1
+            elif right >= len(input_string):
+                char = input_string[left]
+                asteroid_type[ord(char) - 65] += 1
+
+        # print(asteroid_type)
 
     for asteroid in asteroid_type:
         if asteroid <= 6:
