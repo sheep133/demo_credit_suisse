@@ -8,94 +8,85 @@ from codeitsuisse import app
 logger = logging.getLogger(__name__)
 
 
-def optimal_position(input_string):
-    count = [0] * len(input_string)
+def scoring(input_string):
+    s = input_string
+    score_list = [0.0] * len(s)
 
-    for i in range(len(input_string)):
-        dummy_count = 0
-        for j in range(len(input_string)):
-            left = i - j
-            right = i + j
-            if left >= 0 and right < len(input_string):
-                if input_string[left] == input_string[right]:
-                    dummy_count += 1
+    for origin in range(len(s)):
+        score = 0
+        left_queue = []
+        right_queue = []
+        for pointer in range(1, len(s)):
 
-            if dummy_count >= count[i]:
-                count[i] = dummy_count
+            # if left_flag:
+            #     left_pointer = new_left_pointer
+            #     left_flag = False
+            # else:
+            #     left_pointer = origin - pointer
+            # if right_flag:
+            #     right_pointer = new_right_pointer
+            #     right_flag = False
+            # else:
+            #     right_pointer = origin + pointer
+            #
+            # if left_pointer >= 0 and right_pointer < len(s):
+            #     if s[left_pointer] == s[right_pointer]:
+            #         current_char = s[left_pointer]
+            #         left_queue.append(s[left_pointer])
+            #         right_queue.append(s[right_pointer])
+            #         # print(left_pointer, right_pointer)
+            #     elif s[left_pointer] != current_char:
+            #         while right_pointer < len(s) and s[right_pointer] == current_char:
+            #             right_queue.append(s[right_pointer])
+            #             right_pointer += 1
+            #             right_flag = True
+            #     elif s[right_pointer] != current_char:
+            #         while left_pointer >= 0 and s[left_pointer] == current_char:
+            #             left_queue.append(s[left_pointer])
+            #             left_pointer -= 1
+            #             left_flag = True
 
-    return count.index(max(count))
+        # print(left_queue)
+        # print(right_queue)
 
+            left_pointer = origin - pointer
+            right_pointer = origin + pointer
 
-def scoring(input_string, position):
-    score = 0
-    asteroid_type = [0] * 26
-    asteroid_type[ord(input_string[position]) - 65] += 1
-    last_char = input_string[position]
-    left_flag = False
-    right_flag = False
-    new_left = 0
-    new_right = 0
-    for j in range(max(position+1, len(input_string)-position)):
+            if left_pointer >= 0:
+                left_queue.append(s[left_pointer])
+            if right_pointer < len(s):
+                right_queue.append(s[right_pointer])
 
-        if left_flag:
-            left = new_left
-            left_flag = False
-        else:
-            left = position - j
-        # print(left)
+        # print(left_queue, right_queue)
 
-        if right_flag:
-            right = new_right
-            right_flag = False
-        else:
-            right = position + j
-        # print(right)
+        current_char = s[origin]
 
-        # left = position - j
-        # right = position + j
-        # print(left, right)
-        if 0 <= left != right < len(input_string):
-
-            if input_string[left] == input_string[right]:
-                char = input_string[left]
-                asteroid_type[ord(char)-65] += 2
-                last_char = input_string[left]
-                # print(left, right, char)
+        while len(left_queue) != 0 or len(right_queue) != 0:
+            left_count = 0
+            right_count = 0
+            while len(left_queue) != 0 and left_queue[0] == current_char:
+                left_queue.pop(0)
+                left_count += 1
+            while len(right_queue) != 0 and right_queue[0] == current_char:
+                right_queue.pop(0)
+                right_count += 1
+            # print(left_queue, right_queue, left_count, right_count)
+            dummy = left_count + right_count
+            if dummy <= 6:
+                score += dummy * 1
+            elif 7 <= dummy < 10:
+                score += dummy * 1.5
             else:
-                # print("ssss")
-                new_left = left
-                new_right = right
-                while new_left >= 0 and input_string[new_left] == last_char:
-                    left_flag = True
-                    char = input_string[new_left]
-                    # print(new_left, char)
-                    asteroid_type[ord(char) - 65] += 1
-                    new_left -= 1
+                score += dummy * 2
 
-                while new_right < len(input_string) and input_string[new_right] == last_char:
-                    right_flag = True
-                    char = input_string[new_right]
-                    asteroid_type[ord(char) - 65] += 1
-                    new_right += 1
-        else:
-            if left < 0:
-                char = input_string[right]
-                asteroid_type[ord(char) - 65] += 1
-            elif right >= len(input_string):
-                char = input_string[left]
-                asteroid_type[ord(char) - 65] += 1
+            if left_queue and right_queue and left_queue[0] == right_queue[0]:
+                current_char = left_queue[0]
+            else:
+                break
 
-        # print(asteroid_type)
+        score_list[origin] = score
 
-    for asteroid in asteroid_type:
-        if asteroid <= 6:
-            score += asteroid * 1
-        elif 7 <= asteroid < 10:
-            score += asteroid * 1.5
-        else:
-            score += asteroid * 2
-
-    return score
+    return max(score_list)+1, score_list.index(max(score_list)) + 1
 
 
 @app.route('/asteroid', methods=['POST'])
@@ -107,10 +98,10 @@ def evaluate_asteroid():
     output = []
     for each_input in input_data:
         each_output = dict()
-        pos = optimal_position(each_input)
+        score, origin = scoring(each_input)
         each_output["input"] = each_input
-        each_output["score"] = scoring(each_input, pos)
-        each_output["origin"] = pos
+        each_output["score"] = score
+        each_output["origin"] = origin
         output.append(each_output)
 
     real_output = dict(output=output)
