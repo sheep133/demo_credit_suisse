@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 def cipher(d, x, y_str):
-    if d >= 5:
-        return random.randint(12, 20)
+    if d >= 4:
+        return random.randint(15, 30)
     fx = str(round(f(int(x)), 3))
     for i in range(0, 10 ** (d + 1)):
         s = str(i) + "::" + fx
