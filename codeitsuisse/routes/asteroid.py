@@ -104,8 +104,8 @@ def evaluate_asteroid():
         each_output["origin"] = origin
         output.append(each_output)
 
-    real_output = dict(test_cases=output)
-    return json.dumps(real_output)
+    real_output = {'test_cases': output}
+    return json.dumps(output)
 
     # inputValue = data.get("input")
     # result = inputValue * inputValue
