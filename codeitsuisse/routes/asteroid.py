@@ -90,7 +90,7 @@ def scoring(input_string, position):
     for asteroid in asteroid_type:
         if asteroid <= 6:
             score += asteroid * 1
-        elif 6 <= asteroid < 10:
+        elif 7 <= asteroid < 10:
             score += asteroid * 1.5
         else:
             score += asteroid * 2
@@ -103,7 +103,7 @@ def evaluate_asteroid():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
 
-    input_data = data.get("input")
+    input_data = data.get("test_cases")
     output = []
     for each_input in input_data:
         each_output = dict()
